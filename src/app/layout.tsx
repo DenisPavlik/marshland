@@ -1,15 +1,32 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Instrument_Serif, JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
-import "@radix-ui/themes/styles.css";
-import { Theme } from "@radix-ui/themes";
 
-const inter = Inter({ subsets: ["latin"] });
+const sans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const serif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-serif",
+  display: "swap",
+});
+
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Job board",
-  description: "Find your future job here",
+  title: "Marshland — find your next role",
+  description:
+    "A focused job board for engineers who care about craft. Discover roles at startups that move quietly and decisively.",
 };
 
 export default function RootLayout({
@@ -18,15 +35,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className} suppressHydrationWarning={true}>
-        <Theme>
-          <Header />
-          {children}
-          <footer className="container py-8 text-gray-500">
-            Job Board &copy; 2024 - All rights reserved
-          </footer>
-        </Theme>
+    <html lang="en" className={`${sans.variable} ${serif.variable} ${mono.variable}`}>
+      <body className="font-sans min-h-screen flex flex-col" suppressHydrationWarning>
+        <Header />
+        <main className="flex-1">{children}</main>
+        <footer className="mt-24 border-t border-gray-200 py-8 bg-white opacity-0 motion-safe:animate-fade-up motion-reduce:opacity-100 [animation-delay:400ms]">
+          <div className="container flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400">
+            <span className="font-mono">
+              MARSHLAND &copy; {new Date().getFullYear()}
+            </span>
+            <span>Built quietly in the swamp.</span>
+          </div>
+        </footer>
       </body>
     </html>
   );

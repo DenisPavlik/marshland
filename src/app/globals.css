@@ -2,6 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-  @apply text-gray-800;
+@layer base {
+  html {
+    background-color: #ffffff;
+    color-scheme: light;
+  }
+
+  body {
+    @apply text-gray-900 bg-white antialiased;
+  }
+
+  ::selection {
+    background-color: rgba(74, 124, 89, 0.25);
+    color: #111827;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-swamp-500/40 ring-offset-2 ring-offset-white;
+  }
+}
+
+@layer components {
+  .text-gradient-swamp {
+    @apply bg-gradient-to-br from-swamp-700 to-swamp-500 bg-clip-text text-transparent;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-2.5 min-h-[44px]
+      rounded-full font-medium text-white
+      bg-swamp-500 shadow-swamp-glow
+      transition-all duration-200
+      hover:bg-swamp-600 hover:scale-[1.03] active:scale-100
+      disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 min-h-[44px]
+      rounded-full font-medium text-gray-700
+      bg-white ring-1 ring-gray-300
+      transition-all duration-200
+      hover:bg-gray-50 hover:text-gray-900 hover:ring-gray-400
+      disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .input-base {
+    @apply w-full px-4 py-2.5 min-h-[44px] rounded-xl
+      bg-white text-gray-900
+      ring-1 ring-gray-300 placeholder:text-gray-400
+      transition-all duration-200
+      focus:ring-swamp-500/60 focus:outline-none;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl
+      ring-1 ring-gray-200 shadow-card
+      transition-all duration-300;
+  }
 }

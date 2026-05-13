@@ -1,46 +1,74 @@
-import { getUser } from "@workos-inc/authkit-nextjs";
-import { WorkOS } from "@workos-inc/node";
+import { getUser, getSignInUrl } from "@workos-inc/authkit-nextjs";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 import { createCompany } from "../actions/workosActions";
+import NoAccess from "../components/NoAccess";
 
 export default async function NewCompanyPage() {
-  const {user} = await getUser();
+  const { user } = await getUser();
   if (!user) {
+    const signInUrl = await getSignInUrl();
     return (
-      <div className="text-center my-20 text-xl">
-        You need to be logged in to post a job!
-      </div>
+      <NoAccess
+        text="You need to be logged in to create a company."
+        action={
+          <Link href={signInUrl} className="btn-primary">
+            Sign in
+          </Link>
+        }
+      />
     );
   }
-  
-  const workos = new WorkOS(process.env.WORKOS_API_KEY);
+
   async function handleNewCompanyFormSubmit(data: FormData) {
-    'use server';
-    if (user) {
-      await createCompany(data.get('newCompanyName') as string, user.id)
-    }
+    "use server";
+    await createCompany(data.get("newCompanyName") as string);
   }
+
   return (
-    <div className="container">
-      <h2 className="text-lg mt-6">Create a new company</h2>
-      <p className="text-gray-500 text-sm mb-2">
-        To create a job listing you first need to register a company
-      </p>
-      <form
-        action={handleNewCompanyFormSubmit}
-        className="flex gap-2"
+    <section className="container max-w-xl py-16">
+      <Link
+        href="/new-listing"
+        className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-swamp-600 transition-colors mb-8"
       >
-        <input
-          type="text"
-          name="newCompanyName"
-          className="p-2 border border-gray-400 rounded-md"
-        />
-        <button
-          type="submit"
-          className="flex gap-2 items-center bg-gray-200 p-2 rounded-md"
-        >
-          Create company
-        </button>
+        <FontAwesomeIcon icon={faArrowLeft} className="size-3" />
+        Back to companies
+      </Link>
+
+      <header className="mb-8 opacity-0 motion-safe:animate-fade-up motion-reduce:opacity-100 [animation-delay:50ms]">
+        <h1 className="font-serif text-4xl text-gray-900">Create a company</h1>
+        <p className="mt-2 text-gray-500">
+          To post a role, you first need to register the company that&apos;s
+          hiring.
+        </p>
+      </header>
+
+      <form action={handleNewCompanyFormSubmit} className="space-y-4">
+        <div className="opacity-0 motion-safe:animate-fade-up motion-reduce:opacity-100 [animation-delay:150ms]">
+          <label
+            htmlFor="newCompanyName"
+            className="block font-mono text-xs uppercase tracking-wider text-gray-400 mb-2"
+          >
+            Company name
+          </label>
+          <input
+            id="newCompanyName"
+            type="text"
+            name="newCompanyName"
+            required
+            minLength={2}
+            maxLength={100}
+            placeholder="Acme Inc."
+            className="input-base"
+          />
+        </div>
+        <div className="flex justify-end pt-2 opacity-0 motion-safe:animate-fade-up motion-reduce:opacity-100 [animation-delay:230ms]">
+          <button type="submit" className="btn-primary">
+            Create company
+          </button>
+        </div>
       </form>
-    </div>
+    </section>
   );
 }

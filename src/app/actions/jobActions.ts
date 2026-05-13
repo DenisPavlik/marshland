@@ -9,18 +9,47 @@ import {
   User,
   WorkOS,
 } from "@workos-inc/node";
+import { getUser } from "@workos-inc/authkit-nextjs";
 
 export async function saveJobAction(formData: FormData) {
+  const { user } = await getUser();
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
   await mongoose.connect(process.env.MONGO_URI as string);
   const { id, ...jobData } = Object.fromEntries(formData);
+
+  const workos = new WorkOS(process.env.WORKOS_API_KEY as string);
+
+  let targetOrgId: string;
+  if (id) {
+    const existing = await JobModel.findById(id);
+    if (!existing) {
+      throw new Error("Not found");
+    }
+    targetOrgId = existing.orgId;
+    delete (jobData as { orgId?: string }).orgId;
+  } else {
+    targetOrgId = jobData.orgId as string;
+    if (!targetOrgId) {
+      throw new Error("Missing orgId");
+    }
+  }
+
+  const oms = await workos.userManagement.listOrganizationMemberships({
+    userId: user.id,
+    organizationId: targetOrgId,
+  });
+  if (oms.data.length === 0) {
+    throw new Error("Forbidden");
+  }
 
   const jobDoc = id
     ? await JobModel.findByIdAndUpdate(id, jobData)
     : await JobModel.create(jobData);
 
-  if ("orgId" in jobData) {
-    revalidatePath("/jobs/" + jobData.orgId);
-  }
+  revalidatePath("/jobs/" + targetOrgId);
   return JSON.parse(JSON.stringify(jobDoc));
 }
 
