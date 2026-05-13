@@ -36,7 +36,7 @@ Designed for **founders, recruiters, and engineers who hate retyping the same fi
 - 📥 **Admin application inbox** — every applicant for every job, with `new` / `reviewed` states
 - 🌍 **Cascading location selects** — country → state → city, with IDs persisted for clean rehydration
 - ⚡ **Server Actions + Route Handlers** — Next.js 14 App Router, the modern way
-- 📱 **Responsive UI** — Tailwind + Radix UI Themes, looks crisp on mobile and desktop
+- 📱 **Responsive UI** — Tailwind, looks crisp on mobile and desktop
 
 ---
 
