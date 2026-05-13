@@ -65,7 +65,7 @@ The system prompt explicitly tells the model **to omit any field it can't extrac
 | Layer            | Technology                                                    |
 | ---------------- | ------------------------------------------------------------- |
 | **Framework**    | Next.js 14 (App Router, Server Actions, Route Handlers)       |
-| **UI**           | React 18, Tailwind CSS 3, Radix UI Themes, FontAwesome        |
+| **UI**           | React 18, Tailwind CSS 3, FontAwesome                         |
 | **Language**     | TypeScript 5                                                  |
 | **Database**     | MongoDB + Mongoose 8                                          |
 | **Auth & Orgs**  | WorkOS AuthKit + Organizations API                            |
