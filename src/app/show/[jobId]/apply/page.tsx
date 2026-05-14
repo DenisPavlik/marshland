@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { WorkOS } from "@workos-inc/node";
+import { getLogoUrl } from "@/lib/logoUtils";
 import ApplyForm from "./ApplyForm";
 
 type PageProps = {
@@ -21,6 +23,11 @@ export default async function ApplyPage({ params }: PageProps) {
   if (!jobDoc) {
     notFound();
   }
+
+  const workos = new WorkOS(process.env.WORKOS_API_KEY as string);
+  const org = await workos.organizations.getOrganization(jobDoc.orgId);
+  const orgName = org.name;
+  const logoUrl = getLogoUrl(orgName);
 
   const descriptionPreview =
     jobDoc.description?.length > 240
@@ -50,6 +57,14 @@ export default async function ApplyPage({ params }: PageProps) {
                     height={500}
                     className="size-12 rounded-xl object-cover ring-1 ring-gray-200"
                   />
+                ) : logoUrl ? (
+                  <Image
+                    src={logoUrl}
+                    alt={`${orgName} logo`}
+                    width={128}
+                    height={128}
+                    className="size-12 rounded-xl object-contain ring-1 ring-gray-200 bg-white"
+                  />
                 ) : (
                   <div className="size-12 rounded-xl bg-swamp-50 ring-1 ring-swamp-100 flex items-center justify-center">
                     <FontAwesomeIcon
@@ -64,7 +79,7 @@ export default async function ApplyPage({ params }: PageProps) {
                   {jobDoc.title}
                 </h2>
                 <p className="mt-1 font-mono text-xs uppercase tracking-wider text-gray-500">
-                  {jobDoc.orgName || "Company"}
+                  {orgName}
                 </p>
               </div>
             </div>
